@@ -32,6 +32,7 @@ class Trainer:
 
             train_acc = 100 * correct / total
             val_acc, val_loss = self.evaluate(self.config.val_dataloader)
+            # self.config.scheduler.step(val_loss)
             print(f"Epoch [{epoch+1}/{self.config.num_epoch}] - Train Loss: {running_loss:.4f} - Train Acc: {train_acc:.2f}% - Val Acc: {val_acc:.2f}% - Val Loss: {val_loss:.2f}")
             self.train_acc_list.append(train_acc)
             self.val_acc_list.append(val_acc)

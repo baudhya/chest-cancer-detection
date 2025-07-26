@@ -1,6 +1,8 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from torch.optim.lr_scheduler import ReduceLROnPlateau
+
 
 from model.model import get_model
 from dataloader.dataloader import (
@@ -36,8 +38,9 @@ if __name__ == "__main__":
     class_names = train_dataset.classes
     model = get_model(len(class_names), args.model_name, True).to(device)
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=args.lr) 
-    config = Configuration(model, criterion, optimizer, train_loader, val_loader, args.num_epoch, args.lr, device)
+    optimizer = optim.Adam(model.parameters(), lr=args.lr)
+    scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=5, verbose=True) # for learning rate decay 
+    config = Configuration(model, criterion, optimizer, scheduler, train_loader, val_loader, args.num_epoch, args.lr, device)
     
     print("Model : ", model)
     print("Classes:", class_names)

@@ -1,11 +1,12 @@
 from dataclasses import dataclass, field
 
 class Configuration:
-    def __init__(self, model, criterion, optimizer, train_dataloader,
-        val_dataloader, num_epoch, lr, device):
+    def __init__(self, model, criterion, optimizer, scheduler, 
+                 train_dataloader, val_dataloader, num_epoch, lr, device):
         self.model = model
         self.criterion = criterion
         self.optimizer = optimizer
+        self.scheduler = scheduler
         self.train_dataloader = train_dataloader
         self.val_dataloader = val_dataloader
         self.num_epoch = num_epoch
