@@ -11,7 +11,6 @@ A deep learning project for automated classification of chest CT scan images usi
 
 - [Overview](#-overview)
 - [Features](#-features)
-- [Project Structure](#-project-structure)
 - [Installation](#-installation)
 - [Dataset](#-dataset)
 - [Usage](#-usage)
@@ -40,32 +39,6 @@ This project focuses on developing robust deep learning models for chest CT scan
 - 📈 **Real-time Monitoring**: Progress tracking and performance visualization
 - 🔄 **Automated Dataset Management**: Direct download from Kaggle
 
-## 📁 Project Structure
-
-```
-ct-scan-model/
-├── 📄 main.py                    # Main training script
-├── 📄 dataset_download.py        # Dataset download utility
-├── 📄 requirements.txt           # Python dependencies
-├── 📄 LICENSE                    # MIT License
-├── 📄 .gitignore                 # Git ignore rules
-├── 🗂️ model/
-│   ├── __init__.py
-│   └── model.py                  # Model architectures
-├── 🗂️ dataloader/
-│   └── dataloader.py             # Data loading & preprocessing
-├── 🗂️ trainer/
-│   └── trainer.py                # Training & evaluation logic
-├── 🗂️ utils/
-│   ├── plot.py                   # Visualization utilities
-│   ├── config.py                 # Configuration management
-│   └── argument_parser.py        # Command-line arguments
-├── 🗂️ dataset/                  # Dataset directory (auto-created)
-└── 🗂️ results/                  # Generated outputs
-    ├── 📊 Accuracy_graph.jpg
-    ├── 📊 Loss_graph.jpg
-    └── 📊 confusion_matrix.jpg
-```
 
 ## 🛠️ Installation
 
