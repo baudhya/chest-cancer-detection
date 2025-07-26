@@ -35,6 +35,7 @@ def get_transformation(img_size = 128):
         transforms.Resize((img_size, img_size)),
         transforms.RandomHorizontalFlip(),
         transforms.RandomRotation(10),
+        # transforms.RandomCrop(168, padding=8), # testing : acc : 95 without this
         transforms.ColorJitter(brightness=0.2, contrast=0.2),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406],

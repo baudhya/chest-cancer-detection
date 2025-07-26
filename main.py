@@ -16,15 +16,14 @@ from utils.plot import (
     print_classification_report
 )
 
-#Hyper parameter's
+from utils.config import Configuration
+from utils.argument_parser import get_args
+
+#Hyper parameter's 
+IMG_SIZE = 200 # original_image -> 200 x 200 size . Use 224 x 224 for best output (currently not fitting inside my GPU)
+
+args = get_args()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-IMG_SIZE = 200
-BATCH_SIZE = 32
-lr = 0.0001
-NUM_EPOCH = 30
-model_name = 'densenet'
-
-
 train_transform, val_transform = get_transformation(IMG_SIZE)
 train_dataset, test_dataset, val_dataset = get_dataset_processed(
     'dataset/train', 'dataset/test', 'dataset/valid',
@@ -36,25 +35,26 @@ train_loader, test_loader, val_loader = get_dataloader(train_dataset, test_datas
 class_names = train_dataset.classes
 print("Classes:", class_names)
 
-model = get_model(len(class_names), model_name, True).to(device)
+model = get_model(len(class_names), args.model_name, True).to(device)
 print("Model : ", model)
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=lr)
+optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
-trainer = Trainer(train_loader, val_loader, model, criterion, optimizer, NUM_EPOCH, lr, device)
+config = Configuration(model, criterion, optimizer, train_loader, val_loader, args.num_epoch, args.lr, device)
+trainer = Trainer(config)
 trainer.train()
 test_acc, test_loss = trainer.evaluate(test_loader)
 print(f"Final Test Accuracy: {test_acc:.2f}%")
 
 plot_epoch_graph(
-    NUM_EPOCH, 
+    args.num_epoch, 
     trainer.get_train_loss_list(), "Train Loss",
     trainer.get_val_loss_list(), "Validation Loss", 
     "Loss"
 )
 
 plot_epoch_graph(
-    NUM_EPOCH,
+    args.num_epoch,
     trainer.get_train_acc_list(), "Train Accuracy",
     trainer.get_val_acc_list(), "Validation Accuracy",
     "Accuracy"
