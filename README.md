@@ -1,178 +1,225 @@
-# CT Scan Classification Model
+# 🩺 CT Scan Classification Model
 
-A deep learning project for classifying chest CT scan images using PyTorch. This project implements improved versions of DenseNet and VGG19 architectures for medical image classification.
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.6.0+-red.svg)](https://pytorch.org/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Kaggle](https://img.shields.io/badge/Dataset-Kaggle-orange.svg)](https://www.kaggle.com/datasets/mohamedhanyyy/chest-ctscan-images)
 
-## 🏥 Project Overview
+A deep learning project for automated classification of chest CT scan images using PyTorch. This repository implements improved versions of DenseNet and VGG19 architectures with comprehensive data augmentation and evaluation pipelines.
 
-This project focuses on developing a robust deep learning model for chest CT scan image classification. The model can distinguish between different chest conditions from CT scan images, making it useful for medical diagnosis assistance.
+## 📋 Table of Contents
 
-## 🚀 Features
+- [Overview](#-overview)
+- [Features](#-features)
+- [Project Structure](#-project-structure)
+- [Installation](#-installation)
+- [Dataset](#-dataset)
+- [Usage](#-usage)
+- [Model Architectures](#-model-architectures)
+- [Results](#-results)
+- [Configuration](#-configuration)
+- [System Requirements](#-system-requirements)
+- [License](#-license)
 
-- **Multiple Model Architectures**: Supports both DenseNet121 and VGG19 with custom improvements
-- **Data Augmentation**: Comprehensive image transformations for better model generalization
-- **Training Pipeline**: Complete training and evaluation pipeline with progress tracking
-- **Visualization Tools**: Automatic generation of training curves and confusion matrices
-- **Easy Dataset Management**: Automated dataset download from Kaggle
+## 🎯 Overview
+
+This project focuses on developing robust deep learning models for chest CT scan image classification. The system can automatically categorize CT scan images into different chest conditions, providing valuable assistance for medical diagnosis and research.
+
+### Key Capabilities:
+- **Multi-class Classification**: Distinguish between various chest conditions
+- **Transfer Learning**: Leverage pre-trained models for better performance
+- **Data Augmentation**: Comprehensive image transformations for improved generalization
+- **Automated Evaluation**: Complete pipeline with metrics and visualizations
+
+## ✨ Features
+
+- 🔧 **Multiple Model Architectures**: DenseNet121 and VGG19 with custom improvements
+- 🎨 **Advanced Data Augmentation**: Random flips, rotations, color jittering
+- 📊 **Comprehensive Evaluation**: Loss curves, accuracy plots, confusion matrices
+- 🚀 **Easy Training Pipeline**: One-command training with configurable parameters
+- 📈 **Real-time Monitoring**: Progress tracking and performance visualization
+- 🔄 **Automated Dataset Management**: Direct download from Kaggle
 
 ## 📁 Project Structure
 
 ```
 ct-scan-model/
-├── main.py                 # Main training script
-├── dataset_download.py     # Dataset download utility
-├── requirements.txt        # Python dependencies
-├── model/
+├── 📄 main.py                    # Main training script
+├── 📄 dataset_download.py        # Dataset download utility
+├── 📄 requirements.txt           # Python dependencies
+├── 📄 LICENSE                    # MIT License
+├── 📄 .gitignore                 # Git ignore rules
+├── 🗂️ model/
 │   ├── __init__.py
-│   └── model.py           # Model architectures (DenseNet, VGG19)
-├── dataloader/
-│   └── dataloader.py      # Data loading and preprocessing
-├── trainer/
-│   └── trainer.py         # Training and evaluation logic
-├── utils/
-│   └── plot.py           # Visualization utilities
-├── dataset/              # Dataset directory (created after download)
-└── results/              # Generated plots and metrics
-    ├── Accuracy_graph.jpg
-    ├── Loss_graph.jpg
-    └── confusion_matrix.jpg
+│   └── model.py                  # Model architectures
+├── 🗂️ dataloader/
+│   └── dataloader.py             # Data loading & preprocessing
+├── 🗂️ trainer/
+│   └── trainer.py                # Training & evaluation logic
+├── 🗂️ utils/
+│   ├── plot.py                   # Visualization utilities
+│   ├── config.py                 # Configuration management
+│   └── argument_parser.py        # Command-line arguments
+├── 🗂️ dataset/                  # Dataset directory (auto-created)
+└── 🗂️ results/                  # Generated outputs
+    ├── 📊 Accuracy_graph.jpg
+    ├── 📊 Loss_graph.jpg
+    └── 📊 confusion_matrix.jpg
 ```
 
 ## 🛠️ Installation
 
+### Prerequisites
+- Python 3.8 or higher
+- CUDA-compatible GPU (optional, for faster training)
+- 8GB+ RAM recommended
+- 2GB+ free disk space
+
+### Setup Instructions
+
 1. **Clone the repository**
    ```bash
-   git clone <your-repo-url>
+   git clone https://github.com/yourusername/ct-scan-model.git
    cd ct-scan-model
    ```
 
-2. **Install dependencies**
+2. **Create virtual environment** (recommended)
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+3. **Install dependencies**
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Set up Kaggle API** (for dataset download)
-   - Install Kaggle CLI: `pip install kaggle`
-   - Get your Kaggle API credentials from [Kaggle Settings](https://www.kaggle.com/settings/account)
-   - Place `kaggle.json` in `~/.kaggle/` directory
+4. **Set up Kaggle API** (for dataset download)
+   ```bash
+   pip install kaggle
+   ```
+   - Get your API credentials from [Kaggle Settings](https://www.kaggle.com/settings/account)
+   - Download `kaggle.json` and place it in `~/.kaggle/` directory
+   - Set permissions: `chmod 600 ~/.kaggle/kaggle.json`
 
 ## 📊 Dataset
 
-The project uses the [Chest CT-Scan Images Dataset](https://www.kaggle.com/datasets/mohamedhanyyy/chest-ctscan-images) from Kaggle, which contains CT scan images categorized into different chest conditions.
+The project uses the [Chest CT-Scan Images Dataset](https://www.kaggle.com/datasets/mohamedhanyyy/chest-ctscan-images) from Kaggle, containing CT scan images categorized into different chest conditions.
 
 ### Download Dataset
-
 ```bash
 python dataset_download.py
 ```
 
-This will automatically:
-- Download the dataset from Kaggle
-- Extract it to the `dataset/` directory
-- Organize it into train/test/validation splits
+This script will:
+- ✅ Download the dataset from Kaggle
+- ✅ Extract it to the `dataset/` directory
+- ✅ Organize into train/test/validation splits
+- ✅ Clean up temporary files
 
-## 🎯 Usage
+## 🚀 Usage
 
-### Training the Model
+### Basic Training
 
-1. **Run the main training script**:
-   ```bash
-   python main.py
-   ```
+Run the model with default parameters:
+```bash
+python main.py
+```
 
-2. **Customize hyperparameters** in `main.py`:
-   ```python
-   IMG_SIZE = 200          # Image size for training
-   BATCH_SIZE = 32         # Batch size
-   lr = 0.0001            # Learning rate
-   NUM_EPOCH = 30         # Number of training epochs
-   model_name = 'densenet' # Model architecture ('densenet' or 'vgg')
-   ```
+### Advanced Training with Custom Parameters
 
-### Model Architectures
+```bash
+python main.py \
+    --batch_size 32 \
+    --lr 0.0001 \
+    --num_epoch 30 \
+    --model_name densenet
+```
 
-The project supports two improved model architectures:
+### Command-line Arguments
 
-1. **ImprovedDenseNetCTScan**: Enhanced DenseNet121 with custom classifier
-2. **ImprovedVGG19CTScan**: Enhanced VGG19 with custom classifier
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `--batch_size` | 32 | Training batch size |
+| `--lr` | 0.0001 | Learning rate |
+| `--num_epoch` | 10 | Number of training epochs |
+| `--model_name` | densenet | Model architecture (densenet/vgg) |
 
-Both models include:
-- Pre-trained backbones
-- Custom classifier layers with dropout
-- Optimized for medical image classification
+## 🧠 Model Architectures
+
+### ImprovedDenseNetCTScan
+- **Backbone**: DenseNet121 (pre-trained)
+- **Classifier**: Custom 3-layer architecture
+- **Features**: 1024 → 128 → num_classes
+- **Regularization**: Dropout (0.3, 0.1)
+
+### ImprovedVGG19CTScan
+- **Backbone**: VGG19 (pre-trained)
+- **Classifier**: Custom 3-layer architecture
+- **Features**: 4096 → 1024 → 128 → num_classes
+- **Regularization**: Dropout (0.3, 0.1)
 
 ## 📈 Results
 
-The training process automatically generates:
-
-- **Training/Validation Loss Curves**: Track model convergence
-- **Training/Validation Accuracy Curves**: Monitor performance improvement
-- **Confusion Matrix**: Visualize classification performance
-- **Classification Report**: Detailed metrics (precision, recall, F1-score)
-
-All results are saved in the `results/` directory.
+The training process automatically generates comprehensive visualizations and metrics:
 
 ### Training Progress Visualization
 
 #### Loss Curves
 ![Training and Validation Loss](results/Loss_graph.jpg)
-
-*The loss curves show the training and validation loss over epochs, helping to identify overfitting and convergence patterns.*
+*Training and validation loss over epochs - helps identify overfitting and convergence patterns*
 
 #### Accuracy Curves
 ![Training and Validation Accuracy](results/Accuracy_graph.jpg)
-
-*The accuracy curves demonstrate the model's learning progress and generalization performance.*
+*Training and validation accuracy progression - shows model learning and generalization*
 
 #### Confusion Matrix
 ![Confusion Matrix](results/confusion_matrix.jpg)
+*Detailed classification performance across all classes - visualizes true/false predictions*
 
-*The confusion matrix provides a detailed view of the model's classification performance across all classes, showing true positives, false positives, true negatives, and false negatives.*
+### Generated Metrics
+- **Training/Validation Loss**: Track model convergence
+- **Training/Validation Accuracy**: Monitor performance improvement
+- **Confusion Matrix**: Class-wise performance analysis
+- **Classification Report**: Precision, recall, F1-score for each class
 
-## 🔧 Configuration
+## ⚙️ Configuration
 
-### Data Augmentation
-
-The training pipeline includes comprehensive data augmentation:
+### Data Augmentation Pipeline
 
 ```python
-# Training transforms
-- Resize to specified image size
-- Random horizontal flip
-- Random rotation (±10 degrees)
-- Color jittering (brightness, contrast)
-- Normalization with ImageNet statistics
+# Training Transforms
+- Resize: (IMG_SIZE, IMG_SIZE)
+- Random Horizontal Flip: p=0.5
+- Random Rotation: ±10 degrees
+- Color Jitter: brightness=0.2, contrast=0.2
+- Normalization: ImageNet statistics
 ```
 
-### Model Configuration
+### Training Configuration
 
-Both models use a custom classifier with:
-- 1024 → 128 → num_classes architecture
-- ReLU activation functions
-- Dropout layers (0.3, 0.1) for regularization
+- **Optimizer**: Adam
+- **Loss Function**: CrossEntropyLoss
+- **Device**: Auto-detects CUDA/CPU
+- **Validation**: Per-epoch evaluation
 
-## 🖥️ System Requirements
+## 💻 System Requirements
 
-- **Python**: 3.8+
-- **CUDA**: Compatible GPU for faster training (optional)
-- **Memory**: 8GB+ RAM recommended
-- **Storage**: 2GB+ free space for dataset
-
-## 📋 Dependencies
-
-Key dependencies include:
-- `torch` & `torchvision`: Deep learning framework
-- `matplotlib` & `seaborn`: Visualization
-- `scikit-learn`: Metrics and evaluation
-- `kaggle`: Dataset download
-- `PIL`: Image processing
-
+| Component | Minimum | Recommended |
+|-----------|---------|-------------|
+| **Python** | 3.8 | 3.9+ |
+| **RAM** | 4GB | 8GB+ |
+| **Storage** | 1GB | 2GB+ |
+| **GPU** | CPU only | CUDA-compatible |
+| **OS** | Linux/macOS/Windows | Linux |
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the [MIT License](LICENSE) - see the [LICENSE](LICENSE) file for details.
+
 
 ## 🙏 Acknowledgments
 
-- Dataset provided by [Mohamed Hany](https://www.kaggle.com/mohamedhanyyy) on Kaggle
-- Built with PyTorch and torchvision
-- Inspired by medical image classification research
+- **Dataset**: [Mohamed Hany](https://www.kaggle.com/mohamedhanyyy) for the Chest CT-Scan Images Dataset
+- **Framework**: PyTorch and torchvision for deep learning capabilities
+- **Community**: Open-source contributors and researchers in medical imaging
