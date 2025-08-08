@@ -22,11 +22,15 @@ from utils.config import Configuration
 from utils.argument_parser import Argument
 
 #Hyper parameter's 
-IMG_SIZE = 200 # original_image -> 200 x 200 size . Use 224 x 224 for best output (currently not fitting inside my GPU)
+# IMG_SIZE = 224 # original_image -> 200 x 200 size . Use 224 x 224 for best output (currently not fitting inside my GPU)
 
 
 if __name__ == "__main__":
     args = Argument.get_arguments()
+    if args.model_name == "custom":
+        IMG_SIZE = 256
+    else:
+        IMG_SIZE = 200
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     train_transform, val_transform = get_transformation(IMG_SIZE)
     train_dataset, test_dataset, val_dataset = get_dataset_processed(
@@ -36,9 +40,9 @@ if __name__ == "__main__":
     train_loader, test_loader, val_loader = get_dataloader(train_dataset, test_dataset, val_dataset)
 
     class_names = train_dataset.classes
-    model = get_model(len(class_names), args.model_name, True).to(device)
+    model = get_model(len(class_names), args.model_name, args.pretrained).to(device)
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=args.lr)
+    optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=0.0001)
     scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=5, verbose=True) # for learning rate decay 
     config = Configuration(model, criterion, optimizer, scheduler, train_loader, val_loader, args.num_epoch, args.lr, device)
     

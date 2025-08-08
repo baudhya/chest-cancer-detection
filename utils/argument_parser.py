@@ -7,4 +7,5 @@ class Argument():
         parser.add_argument('--lr', type=float, default=0.0001, help='Learning rate')
         parser.add_argument('--num_epoch', type=int, default=10, help='Number of epochs')
         parser.add_argument('--model_name', type=str, default='densenet', help='Model architecture name')
+        parser.add_argument('--pretrained', type=bool, default=True, help='Pretrained Model')
         return parser.parse_args()
