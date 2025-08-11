@@ -4,14 +4,14 @@ from sklearn.metrics import confusion_matrix, classification_report
 import seaborn as sns
 import numpy as np
 
-def plot_confusion_matrix(y_true, y_pred, class_names):
+def plot_confusion_matrix(y_true, y_pred, class_names, model_name):
     cm = confusion_matrix(y_true, y_pred)
     plt.figure(figsize=(7, 5))
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=class_names, yticklabels=class_names)
     plt.title('Confusion Matrix')
     plt.ylabel('True Label')
     plt.xlabel('Predicted Label')
-    plt.savefig(f"results/confusion_matrix.jpg")
+    plt.savefig(f"results/confusion_{model_name}_matrix.jpg")
     plt.close()
 
 
@@ -36,7 +36,7 @@ def print_classification_report(y_true, y_pred, class_names):
     print(classification_report(y_true, y_pred, target_names=class_names))
 
 
-def plot_epoch_graph(num_epochs, plot_first, plot_first_label, plot_second, plot_second_label, yaxis_label):
+def plot_epoch_graph(num_epochs, plot_first, plot_first_label, plot_second, plot_second_label, yaxis_label, model_name):
     plt.figure(figsize=(10, 5))
     plt.plot(range(1, num_epochs + 1), plot_first, label=plot_first_label)
     plt.plot(range(1, num_epochs + 1), plot_second, label=plot_second_label)
@@ -44,7 +44,7 @@ def plot_epoch_graph(num_epochs, plot_first, plot_first_label, plot_second, plot
     plt.ylabel(yaxis_label)
     plt.title(f"{yaxis_label} over Epochs")
     plt.legend()
-    plt.savefig(f"results/{yaxis_label}_graph.jpg")
+    plt.savefig(f"results/{yaxis_label}_{model_name}_graph.jpg")
 
 
 

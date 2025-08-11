@@ -81,16 +81,18 @@ if __name__ == "__main__":
         args.num_epoch, 
         trainer.get_train_loss_list(), "Train Loss",
         trainer.get_val_loss_list(), "Validation Loss", 
-        "Loss"
+        "Loss",
+        args.model_name
     )
 
     plot_epoch_graph(
         args.num_epoch,
         trainer.get_train_acc_list(), "Train Accuracy",
         trainer.get_val_acc_list(), "Validation Accuracy",
-        "Accuracy"
+        "Accuracy",
+        args.model_name
     )
 
     y_true, y_pred = get_classification_data(model, test_loader, device)
     print_classification_report(y_true, y_pred, class_names)
-    plot_confusion_matrix(y_true, y_pred, class_names)
+    plot_confusion_matrix(y_true, y_pred, class_names, args.model_name)
