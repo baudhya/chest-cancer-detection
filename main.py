@@ -21,6 +21,9 @@ from utils.plot import (
     plot_confusion_matrix,
     print_classification_report,
     plot_class_frequencies,
+    collect_predictions,
+    plot_multiclass_roc_curve,
+    save_unique_class_row,
 )
 
 from utils.config import Configuration
@@ -63,6 +66,7 @@ if __name__ == "__main__":
     # Getting the dataloader
     train_loader, test_loader, val_loader = get_dataloader(train_dataset, test_dataset, val_dataset)
     plot_class_frequencies(train_loader, val_loader, test_loader, new_class_names)
+    # save_unique_class_row(get_dataloader(*get_dataset_processed('dataset/train', 'dataset/test', 'dataset/valid'))[0], class_names)
 
     
     model = get_model(len(class_names), args.model_name, args.pretrained).to(device)
@@ -96,3 +100,5 @@ if __name__ == "__main__":
     y_true, y_pred = get_classification_data(model, test_loader, device)
     print_classification_report(y_true, y_pred, class_names)
     plot_confusion_matrix(y_true, y_pred, class_names, args.model_name)
+    true_labels, probs = collect_predictions(config, test_loader)
+    plot_multiclass_roc_curve(true_labels, probs, class_names, args.model_name)

@@ -7,7 +7,7 @@ def get_dataset_processed(train_path, test_path, val_path, trans_train = None, t
     if trans_train:
         train_dataset = datasets.ImageFolder(train_path, transform = trans_train)
     else: 
-        train_dataset = datasets.ImageFolder(train_path)
+        train_dataset = datasets.ImageFolder(train_path, transform = transforms.Compose([transforms.Resize((224, 224)), transforms.ToTensor(), ]))
 
     if trans_train:
         test_dataset = datasets.ImageFolder(test_path, transform = trans_test)

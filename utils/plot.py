@@ -1,8 +1,10 @@
 import torch
 import matplotlib.pyplot as plt
-from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.metrics import confusion_matrix, classification_report, roc_curve, auc
+from sklearn.preprocessing import label_binarize
 import seaborn as sns
 import numpy as np
+from collections import defaultdict
 
 def plot_confusion_matrix(y_true, y_pred, class_names, model_name):
     cm = confusion_matrix(y_true, y_pred)
@@ -11,6 +13,7 @@ def plot_confusion_matrix(y_true, y_pred, class_names, model_name):
     plt.title('Confusion Matrix')
     plt.ylabel('True Label')
     plt.xlabel('Predicted Label')
+    plt.tight_layout() 
     plt.savefig(f"results/confusion_{model_name}_matrix.jpg")
     plt.close()
 
@@ -29,6 +32,24 @@ def get_classification_data(model, test_data_loader, device='cpu'):
             y_true.extend(labels.cpu().numpy())
             y_pred.extend(preds.cpu().numpy())
     return y_true, y_pred
+
+
+def collect_predictions(config, dataloader):
+    config.model.eval()
+    all_labels = []
+    all_probs = []
+    
+    with torch.no_grad():
+        for inputs, labels in dataloader:
+            inputs = inputs.to(config.device)
+            labels = labels.to(config.device)
+            outputs = config.model(inputs)
+            probs = torch.nn.functional.softmax(outputs, dim=1)
+            
+            all_labels.append(labels.cpu().numpy())
+            all_probs.append(probs.cpu().numpy())
+    
+    return np.concatenate(all_labels), np.concatenate(all_probs)
 
 
 def print_classification_report(y_true, y_pred, class_names):
@@ -78,3 +99,80 @@ def plot_class_frequencies(train_loader, val_loader, test_loader, class_names):
 
     for class_name, count in zip(class_names, total_counts):
         print(f"{class_name}: {count}")
+
+
+
+def plot_multiclass_roc_curve(true_labels, probs, class_names, model_name):
+    # Binarize labels
+    n_classes = len(class_names)
+    binarized_labels = label_binarize(true_labels, classes=range(n_classes))
+    
+    # Compute ROC/AUC
+    fpr, tpr, roc_auc = {}, {}, {}
+    for i in range(n_classes):
+        fpr[i], tpr[i], _ = roc_curve(binarized_labels[:, i], probs[:, i])
+        roc_auc[i] = auc(fpr[i], tpr[i])
+    
+    # Plot
+    plt.figure(figsize=(10, 8))
+    colors = ['blue', 'red', 'green', 'purple',]
+    
+    for i, color in zip(range(n_classes), colors):
+        plt.plot(fpr[i], tpr[i], color=color, lw=2,
+                 label=f'{class_names[i]} (AUC = {roc_auc[i]:.2f})')
+    
+    plt.plot([0, 1], [0, 1], 'k--', lw=2)
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Multi-class ROC Curve')
+    plt.legend(loc="lower right")
+    plt.savefig(f"results/roc_{model_name}_graph.jpg")
+    plt.show()
+
+
+
+
+def save_unique_class_row(dataloader, class_names, num_classes=4, samples_per_class=4):
+    class_samples = defaultdict(list)
+    completed_classes = set()
+
+    # Iterate through the dataloader to find samples
+    for images, labels in dataloader:
+        for i in range(len(images)):
+            label = labels[i].item()
+            if label not in completed_classes and len(class_samples[label]) < samples_per_class:
+                class_samples[label].append(images[i])
+                if len(class_samples[label]) == samples_per_class:
+                    completed_classes.add(label)
+            
+            # Stop once we have enough completed classes
+            if len(completed_classes) >= num_classes:
+                break
+        if len(completed_classes) >= num_classes:
+            break
+    
+    if len(completed_classes) < num_classes:
+        print(f"Warning: Could only find {len(completed_classes)} classes with {samples_per_class} samples each.")
+        return
+
+    selected_class_indices = sorted(list(completed_classes))[:num_classes]
+
+    fig, axes = plt.subplots(num_classes, samples_per_class, figsize=(12, 9))
+    fig.suptitle(f'{samples_per_class} Samples From {num_classes} Different Classes', fontsize=16)
+
+    for row_idx, class_idx in enumerate(selected_class_indices):
+        images_for_class = class_samples[class_idx]
+        axes[row_idx, 0].set_ylabel(class_names[class_idx], rotation=90, size='large')
+        
+        for col_idx, image in enumerate(images_for_class):
+            ax = axes[row_idx, col_idx]
+            img_for_display = image.numpy().transpose((1, 2, 0))
+            img_for_display = np.clip(img_for_display, 0, 1)
+
+            ax.imshow(img_for_display)
+            ax.axis('off')    
+    plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+    plt.savefig(f"results/class_samples_grid.png", dpi=300)
+    plt.close(fig)
