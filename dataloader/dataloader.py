@@ -41,23 +41,36 @@ def get_transformation(img_size = 128):
     #     transforms.Normalize(mean=[0.485, 0.456, 0.406],
     #                         std=[0.229, 0.224, 0.225])
     # ])
+    # train_transform = transforms.Compose([
+    #     transforms.Resize((img_size, img_size)),
+    #     transforms.RandomHorizontalFlip(p=0.5),
+        
+    #     # Using RandomAffine for a richer set of geometric augmentations
+    #     transforms.RandomAffine(degrees=15, translate=(0.1, 0.1), scale=(0.9, 1.1)),
+        
+    #     # Jitter and blur for pixel-level robustness
+    #     transforms.ColorJitter(brightness=0.2, contrast=0.2),
+    #     transforms.GaussianBlur(kernel_size=(5, 9), sigma=(0.1, 5.)),
+        
+    #     # Standard conversion and normalization
+    #     transforms.ToTensor(),
+    #     transforms.Normalize(mean=[0.485, 0.456, 0.406],
+    #                         std=[0.229, 0.224, 0.225]),
+        
+    #     # Occlusion technique to improve generalization (applied on the tensor)
+    #     transforms.RandomErasing(p=0.5, scale=(0.02, 0.2)) 
+    # ])
+
     train_transform = transforms.Compose([
         transforms.Resize((img_size, img_size)),
         transforms.RandomHorizontalFlip(p=0.5),
-        
-        # Using RandomAffine for a richer set of geometric augmentations
+        transforms.RandomPerspective(distortion_scale=0.2, p=0.5), # More complex geometric changes
         transforms.RandomAffine(degrees=15, translate=(0.1, 0.1), scale=(0.9, 1.1)),
-        
-        # Jitter and blur for pixel-level robustness
         transforms.ColorJitter(brightness=0.2, contrast=0.2),
         transforms.GaussianBlur(kernel_size=(5, 9), sigma=(0.1, 5.)),
-        
-        # Standard conversion and normalization
+        transforms.TrivialAugmentWide(interpolation=transforms.InterpolationMode.BILINEAR),
         transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                            std=[0.229, 0.224, 0.225]),
-        
-        # Occlusion technique to improve generalization (applied on the tensor)
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
         transforms.RandomErasing(p=0.5, scale=(0.02, 0.2)) 
     ])
 
